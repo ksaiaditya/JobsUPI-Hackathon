@@ -1,0 +1,18 @@
+{
+  "roleTemplates": [
+    {"name": "Delivery Boy", "salaryMin": 15000, "salaryMax": 22000, "workHours": "10am - 7pm", "defaultRequirements": ["10th pass", "Android phone", "Two-wheeler preferred"]},
+    {"name": "Retail Associate", "salaryMin": 12000, "salaryMax": 18000, "workHours": "10am - 8pm", "defaultRequirements": ["12th pass", "Basic English", "POS handling"]},
+    {"name": "Helper", "salaryMin": 10000, "salaryMax": 14000, "workHours": "9am - 6pm", "defaultRequirements": ["No education requirement", "Physically fit"]},
+    {"name": "Field Recruiter", "salaryMin": 20000, "salaryMax": 26000, "workHours": "9am - 6pm", "defaultRequirements": ["Graduation", "Own smartphone"]},
+    {"name": "Warehouse Picker", "salaryMin": 13000, "salaryMax": 17000, "workHours": "8am - 5pm", "defaultRequirements": ["Physically fit", "Can lift 20kg"]}
+  ],
+  "candidates": [
+    {"name": "Ravi Kumar", "role": "Delivery Boy", "area": "JP Nagar", "education": "10th pass", "phone": "+91-90000-00001", "activeToday": true, "appliedToSimilar": false},
+    {"name": "Sita Devi", "role": "Retail Associate", "area": "BTM Layout", "education": "12th pass", "phone": "+91-90000-00002", "activeToday": true, "appliedToSimilar": true},
+    {"name": "Akash", "role": "Helper", "area": "JP Nagar", "education": "8th pass", "phone": "+91-90000-00003", "activeToday": false, "appliedToSimilar": true},
+    {"name": "Rahul", "role": "Delivery Boy", "area": "JP Nagar", "education": "10th pass", "phone": "+91-90000-00004", "activeToday": true, "appliedToSimilar": false},
+    {"name": "Kiran", "role": "Delivery Boy", "area": "HSR Layout", "education": "12th pass", "phone": "+91-90000-00010", "activeToday": true, "appliedToSimilar": false},
+    {"name": "Meena", "role": "Retail Associate", "area": "Koramangala", "education": "Graduation", "phone": "+91-90000-00011", "activeToday": true, "appliedToSimilar": true},
+    {"name": "Shyam", "role": "Warehouse Picker", "area": "Electronic City", "education": "10th pass", "phone": "+91-90000-00012", "activeToday": false, "appliedToSimilar": false}
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "info": {
+    "name": "Jobs UPI - Local API",
+    "_postman_id": "d2f5f1e0-0000-4000-8000-collection-jobs-upi-local",
+    "description": "Postman collection for local Jobs UPI API (health, roles, candidates, feed, offer, hire, dev seed). Uses the environment: Jobs UPI - Local.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}{{health_path}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "{{health_path}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has ok true/time', () => { pm.expect(json).to.be.an('object'); pm.expect(json).to.have.any.keys('ok','status','time'); });",
+              "pm.test('Responds < 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "List Role Templates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}{{roles_templates_path}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}","{{roles_templates_path}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {"type":"text/javascript","exec":[
+                "const j = pm.response.json();",
+                "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                "pm.test('templates array', () => { pm.expect(j.templates).to.be.an('array'); });"
+              ]}
+            }
+          ]
+        },
+        {
+          "name": "Suggest For Role",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}{{roles_suggest_path}}?role={{roleName}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}","{{roles_suggest_path}}"],
+              "query": [
+                {"key":"role","value":"{{roleName}}"}
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {"type":"text/javascript","exec":[
+                "pm.test('200 or 404', () => pm.expect([200,404]).to.include(pm.response.code));",
+                "if (pm.response.code === 200) { const j = pm.response.json(); pm.test('has template', () => pm.expect(j).to.have.property('template')); }"
+              ]}
+            }
+          ]
+        },
+        {
+          "name": "Create Role Template",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Field Recruiter\",\n  \"salaryMin\": 20000,\n  \"salaryMax\": 26000,\n  \"workHours\": \"9am - 6pm\",\n  \"defaultRequirements\": [\"Graduation\", \"Own smartphone\"]\n}" },
+            "url": { "raw": "{{base_url}}{{api_prefix}}/roles/templates", "host": ["{{base_url}}"], "path": ["{{api_prefix}}","roles","templates"] }
+          },
+          "event": [ {"listen":"test","script":{"type":"text/javascript","exec":[
+            "pm.test('201 Created or 503', () => pm.expect([201,503,409]).to.include(pm.response.code));",
+            "if (pm.response.code===201){ const j=pm.response.json(); pm.test('has template id', ()=> pm.expect(j.template.id).to.be.ok); }"
+          ]}} ]
+        },
+        {
+          "name": "Update Role Template",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "body": { "mode": "raw", "raw": "{\n  \"salaryMin\": 21000,\n  \"salaryMax\": 27000\n}" },
+            "url": { "raw": "{{base_url}}{{api_prefix}}/roles/templates/{{templateId}}", "host": ["{{base_url}}"], "path": ["{{api_prefix}}","roles","templates","{{templateId}}"] }
+          },
+          "event": [ {"listen":"test","script":{"type":"text/javascript","exec":[
+            "pm.test('200 OK or 404', () => pm.expect([200,404,503]).to.include(pm.response.code));"
+          ]}} ]
+        },
+        {
+          "name": "Delete Role Template",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{base_url}}{{api_prefix}}/roles/templates/{{templateId}}", "host": ["{{base_url}}"], "path": ["{{api_prefix}}","roles","templates","{{templateId}}"] }
+          },
+          "event": [ {"listen":"test","script":{"type":"text/javascript","exec":[
+            "pm.test('200 OK or 404', () => pm.expect([200,404,503]).to.include(pm.response.code));"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Candidates",
+      "item": [
+        {
+          "name": "Search Candidates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}{{candidates_search_path}}?role={{roleName}}&area={{area}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}","{{candidates_search_path}}"],
+              "query": [
+                {"key":"role","value":"{{roleName}}"},
+                {"key":"area","value":"{{area}}"}
+              ]
+            }
+          },
+          "event": [
+            {"listen":"test","script":{"type":"text/javascript","exec":[
+              "const j = pm.response.json();",
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('results array', () => pm.expect(j.results).to.be.an('array'));"
+            ]}}
+          ]
+        },
+        {
+          "name": "Update Candidate Status (Body)",
+          "request": {
+            "method": "PATCH",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{candidateId}}\",\n  \"status\": \"hired\",\n  \"note\": \"Joining tomorrow\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/candidates/status",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}","candidates","status"]
+            }
+          },
+          "event": [
+            {"listen":"test","script":{"type":"text/javascript","exec":[
+              "pm.test('200 or 4xx', () => pm.expect([200,400,404]).to.include(pm.response.code));"
+            ]}}
+          ]
+        },
+        {
+          "name": "Create Candidate",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "body": { "mode":"raw", "raw": "{\n  \"name\": \"Kiran\",\n  \"role\": \"Delivery Boy\",\n  \"area\": \"HSR Layout\",\n  \"education\": \"12th pass\",\n  \"phone\": \"+91-90000-00010\",\n  \"activeToday\": true,\n  \"appliedToSimilar\": false\n}" },
+            "url": { "raw": "{{base_url}}{{api_prefix}}/candidates", "host": ["{{base_url}}"], "path": ["{{api_prefix}}","candidates"] }
+          },
+          "event": [ {"listen":"test","script":{"type":"text/javascript","exec":[
+            "pm.test('201 Created or 503', () => pm.expect([201,503]).to.include(pm.response.code));"
+          ]}} ]
+        },
+        {
+          "name": "Update Candidate Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key":"Content-Type","value":"application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"hired\",\n  \"note\": \"Joining tomorrow\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}{{candidate_status_path}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}","{{candidate_status_path}}"]
+            }
+          },
+          "event": [
+            {"listen":"test","script":{"type":"text/javascript","exec":[
+              "pm.test('200 or 404', () => pm.expect([200,404]).to.include(pm.response.code));",
+              "if (pm.response.code === 200) { const j = pm.response.json(); pm.test('has candidate', () => pm.expect(j).to.have.property('candidate')); } else { pm.test('error message', () => pm.expect(pm.response.json()).to.have.property('message')); }"
+            ]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Feed",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}{{feed_path}}",
+          "host": ["{{base_url}}"],
+          "path": ["{{api_prefix}}","{{feed_path}}"]
+        }
+      },
+      "event": [
+        {"listen":"test","script":{"type":"text/javascript","exec":[
+          "const j = pm.response.json();",
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+          "pm.test('has sections', () => { pm.expect(j).to.have.keys('nearby','activeToday','recentApplicants'); });"
+        ]}}
+      ]
+    },
+    {
+      "name": "Offer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key":"Content-Type","value":"application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"candidateName\": \"Ravi Kumar\",\n  \"role\": \"Delivery Boy\",\n  \"salary\": \"₹18,000\",\n  \"workHours\": \"10am - 7pm\",\n  \"employerName\": \"MSME Employer\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}{{offer_path}}",
+          "host": ["{{base_url}}"],
+          "path": ["{{api_prefix}}","{{offer_path}}"]
+        }
+      },
+      "event": [
+        {"listen":"test","script":{"type":"text/javascript","exec":[
+          "const j = pm.response.json();",
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+          "pm.test('has message', () => pm.expect(j).to.have.property('message'));"
+        ]}}
+      ]
+    },
+    {
+      "name": "Hire - Mass",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key":"Content-Type","value":"application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"Helper\",\n  \"count\": 2\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}{{hire_mass_path}}",
+          "host": ["{{base_url}}"],
+          "path": ["{{api_prefix}}","{{hire_mass_path}}"]
+        }
+      },
+      "event": [
+        {"listen":"test","script":{"type":"text/javascript","exec":[
+          "const j = pm.response.json();",
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+          "pm.test('suggested array', () => pm.expect(j.suggested).to.be.an('array'));"
+        ]}}
+      ]
+    },
+    {
+      "name": "Dev - Seed DB",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}{{dev_seed_path}}",
+          "host": ["{{base_url}}"],
+          "path": ["{{api_prefix}}","{{dev_seed_path}}"]
+        }
+      },
+      "event": [
+        {"listen":"test","script":{"type":"text/javascript","exec":[
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+          "const j = pm.response.json();",
+          "pm.test('seed result', () => pm.expect(j).to.have.property('ok'));"
+        ]}}
+      ]
+    }
+  ]
+}
