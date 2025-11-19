@@ -44,12 +44,3 @@ build/
 
 # Generated QR/local session data (if persisted)
 qr_sessions_history.json
-
-
-
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/ksaiaditya/JobsUPI-Hackathon.git
-git push -u origin main
