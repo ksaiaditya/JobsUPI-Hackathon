@@ -14,27 +14,32 @@ jobs_upi/
   client/        # React + Vite front-end
   server/        # Express + Socket.IO + Mongoose (skeleton)
   docs/          # Architecture & approach docs
-  setup.ps1      # Windows convenience script
   README.md      # High-level overview
   SETUP.md       # This setup guide
 ```
 
 ## 3. Quick Start (Windows)
-Use the automated script:
+Script removed — perform manual steps:
 ```powershell
-./setup.ps1
-```
-This will:
-1. Install `client` dependencies (`npm install`).
-2. Install `server` dependencies if `server/package.json` exists.
-3. Generate `client/.env.example` if missing.
+# Clone repository
+git clone <repo-url> jobs_upi
+cd jobs_upi
 
-Then:
-```powershell
+# Client install
 cd client
+npm install
+copy .env.example .env   # if example exists; otherwise create new .env
+# Edit .env and set VITE_API_URL if needed
+notepad .env
+npm run dev
+
+# (Optional) start server in a new terminal
+cd ..\server
+npm install
 npm run dev
 ```
-Open http://localhost:5173.
+Open http://localhost:5173 after `npm run dev` starts.
+If you implement the server, ensure its port matches `VITE_API_URL` (default 5000).
 
 ## 4. Quick Start (macOS / Linux)
 ```bash
